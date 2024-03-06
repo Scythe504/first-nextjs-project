@@ -1,9 +1,18 @@
-import { auth } from "@/auth"
-
-
+import { auth, signOut } from "@/auth"
+import { Button } from "@/components/ui/button";
 
 export default async function SettignsPage(){
     const session = await auth();
 
-    return <h1>{JSON.stringify(session)}</h1>
+    return <div>
+        {JSON.stringify(session)}
+        <form action={
+            async()=>{
+                "use server"
+                await signOut();
+            }
+        }>
+            <Button type="submit"> Sign Out</Button>
+        </form>
+    </div>
 }

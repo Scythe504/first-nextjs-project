@@ -32,6 +32,7 @@ export default auth((req)=>{
     //     default :if(!isPublicRoute && !isLoggedIn) return Response.redirect(new URL("/auth/login", nextUrl));
     //     return null;
     // }
+    
     if(isApiAuthRoute){
         return null
     }
