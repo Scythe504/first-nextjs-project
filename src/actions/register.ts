@@ -1,7 +1,7 @@
 "use server"
 import * as z from 'zod'
 import { SignUpSchema } from '@/schema'
-import * as bcrypt from 'bcrypt'
+import * as bcrypt from 'bcryptjs'
 import prisma from '@/db/index'
 import { getUserByEmail } from '@/data/user'
 

@@ -7,9 +7,6 @@ export const getUserByEmail = async (email : string)=>{
                 email
             }
         })
-        if(user){
-            throw new Error("User Already Exists");
-        }
         return user;
     } catch (error) {
         console.error(error)
