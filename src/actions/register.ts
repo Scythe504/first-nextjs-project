@@ -16,14 +16,13 @@ export const register = async (value : z.infer<typeof SignUpSchema>)=>{
     const {email, password, username} = validatedFields.data;
     const hashedPassword : string = await bcrypt.hash(password, saltRounds);
     
-    try {
         const existingUser = await prisma.user.findUnique({
             where: {
-                email: email
+                email,
             }
         })
         if(existingUser){
-            throw new Error("User already exists")
+            return { error : "User already exists please use another email"}
         }
         await prisma.user.create({
             data:{
@@ -33,11 +32,5 @@ export const register = async (value : z.infer<typeof SignUpSchema>)=>{
             }
         })
         // Send Verification token email
-        return {success: "user created"}
-    }catch(e){
-        console.error("Error", e)
-        return {error : "User couldnt be created"}
-    }
-
-    
+        return {success: "user created"}    
 }
