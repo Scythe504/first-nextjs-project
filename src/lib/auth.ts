@@ -2,6 +2,9 @@ import { handleLogin } from '@/utils/handleSignin';
 import CredentialsProvider from 'next-auth/providers/credentials'
 import Google from "next-auth/providers/google";
 import type { inferredLoginSchema } from '@/utils/handleSignin';
+import type { inferredSignupSchema } from '@/utils/handleSignup';
+import { handleSignup } from '@/utils/handleSignup';
+import { createDecipheriv } from 'crypto';
 
 
 export const authOptions = {
@@ -11,7 +14,7 @@ export const authOptions = {
             clientSecret: process.env.GOOGLE_LIENT_SECRET as string
         }),
         CredentialsProvider({
-            name: "Login",
+            name: "Email",
             credentials: {
                 email: {
                     label: "Email",
@@ -29,6 +32,34 @@ export const authOptions = {
                     password: credentials.password
                 })
             }
+        }),
+        CredentialsProvider({
+            name:"Signup",
+            credentials:{
+                username: {
+                    label: "username",
+                    type: "text",
+                },
+                email: {
+                    label: "Email",
+                    type: "email",
+                    placeholder: "example@example.com"
+                },password: {
+                    label: "Password",
+                    type: "password",
+                }//@ts-ignore
+            }, async authorize(credentials: inferredSignupSchema) {
+                if(    !credentials 
+                    || !credentials.email 
+                    || !credentials.password
+                    || !credentials.username
+                    ) return null;
+
+                return await handleSignup(
+                    {email : credentials.email, 
+                    password: credentials.password, 
+                    username: credentials.username})
+            },
         })
     ]
 }
