@@ -36,7 +36,7 @@ export const register = async (value : z.infer<typeof SignUpSchema>)=>{
         return {success: "user created"}
     }catch(e){
         console.error("Error", e)
-        return {error : e}
+        return {error : "User couldnt be created"}
     }
 
     
