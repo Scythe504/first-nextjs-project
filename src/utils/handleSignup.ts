@@ -19,7 +19,7 @@ export async function handleSignup(
     if(!validCred){
         throw new Error("Invalid Inputs");
     }
-    
+    console.log("\n Ok This is working \n \n \n")
     try{
          const hashedPassword = await bcrypt.hash(password, saltRounds);
          const dbUser = await prisma?.user.upsert({
@@ -34,8 +34,11 @@ export async function handleSignup(
                 username: username
             }
          })
+         console.log(dbUser,"\n\n\n\n");
          if(dbUser){
-            return generateJwt(dbUser.id)
+            const jwt = generateJwt(dbUser.id);
+            console.log(jwt);
+            return jwt;
          }
         throw new Error("user creation/updation failed");
     }catch(e){

@@ -33,33 +33,33 @@ export const authOptions = {
                 })
             }
         }),
-        CredentialsProvider({
-            name:"Signup",
-            credentials:{
-                username: {
-                    label: "username",
-                    type: "text",
-                },
-                email: {
-                    label: "Email",
-                    type: "email",
-                    placeholder: "example@example.com"
-                },password: {
-                    label: "Password",
-                    type: "password",
-                }//@ts-ignore
-            }, async authorize(credentials: inferredSignupSchema) {
-                if(    !credentials 
-                    || !credentials.email 
-                    || !credentials.password
-                    || !credentials.username
-                    ) return null;
+        // CredentialsProvider({
+        //     name:"Signup",
+        //     credentials:{
+        //         username: {
+        //             label: "username",
+        //             type: "text",
+        //         },
+        //         email: {
+        //             label: "Email",
+        //             type: "email",
+        //             placeholder: "example@example.com"
+        //         },password: {
+        //             label: "Password",
+        //             type: "password",
+        //         }//@ts-ignore
+        //     }, async authorize(credentials: inferredSignupSchema) {
+        //         if(    !credentials 
+        //             || !credentials.email 
+        //             || !credentials.password
+        //             || !credentials.username
+        //             ) return null;
 
-                return await handleSignup(
-                    {email : credentials.email, 
-                    password: credentials.password, 
-                    username: credentials.username})
-            },
-        })
+        //         return await handleSignup(
+        //             {email : credentials.email, 
+        //             password: credentials.password, 
+        //             username: credentials.username})
+        //     },
+        // })
     ]
 }
