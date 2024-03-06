@@ -19,7 +19,7 @@ export const register = async (value : z.infer<typeof SignUpSchema>)=>{
     try {
         const existingUser = await prisma.user.findUnique({
             where: {
-                email
+                email: email
             }
         })
         if(existingUser){
