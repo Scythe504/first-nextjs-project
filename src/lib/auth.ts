@@ -4,7 +4,7 @@ import Google from "next-auth/providers/google";
 import type { inferredLoginSchema } from '@/utils/handleSignin';
 import type { inferredSignupSchema } from '@/utils/handleSignup';
 import { handleSignup } from '@/utils/handleSignup';
-import { createDecipheriv } from 'crypto';
+
 
 
 export const authOptions = {
