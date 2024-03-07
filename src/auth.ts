@@ -11,14 +11,18 @@ export const {
     signIn,
     signOut
 } = NextAuth({
+    events: {
+       async linkAccount({user}){
+            await prisma.user.update({
+                where: {
+                    id: user.id,
+                },data:{
+                    emailVerified : new Date(),
+                }
+            })
+       }
+    },
     callbacks: {
-        async signIn({user}){//@ts-ignore
-            const existingUser = await getUserById(user.id) ;
-            if(!existingUser || !existingUser.emailVerified){
-                return false;
-            }
-            return true;
-        },
         async session({ token, session }) {
             console.log({
                 sessionToken: token,
@@ -28,27 +32,35 @@ export const {
                 session.user.role = token.role;
             }
             // if(session.user){
-            //     //@ts-ignore
-            //     session.user.customField = token.customField;
-            // }
-            if (token.sub && session.user) {
-                session.user.id = token.sub;
-            }
-            return session;
-        },
-        async jwt({ token }) {
-            // console.log({token})
-            // token.customField = 'testtoken'
-            if (!token.sub) {
+                //     //@ts-ignore
+                //     session.user.customField = token.customField;
+                // }
+                if (token.sub && session.user) {
+                    session.user.id = token.sub;
+                }
+                return session;
+            },
+            async jwt({ token }) {
+                // console.log({token})
+                // token.customField = 'testtoken'
+                if (!token.sub) {
+                    return token
+                }
+                const existingUser = await getUserById(token.sub)
+                if (!existingUser) {
+                    return token
+                }
+                token.role = existingUser.role;
                 return token
-            }
-            const existingUser = await getUserById(token.sub)
-            if (!existingUser) {
-                return token
-            }
-            token.role = existingUser.role;
-            return token
-        }
+            },
+            // async signIn({user}){//@ts-ignore
+            //     const existingUser = await getUserById(user.id) ;
+            //     if(!existingUser || !existingUser.emailVerified){
+            //         return false;
+            //     }
+                
+            //     return true;
+            // },
     },
     adapter: PrismaAdapter(prisma),
     session: { strategy: "jwt" },

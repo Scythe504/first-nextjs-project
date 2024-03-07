@@ -3,7 +3,8 @@ import bcrypt from "bcryptjs"
 import type { NextAuthConfig } from "next-auth"
 import { LoginSchema } from "@/schema/index"
 import { getUserByEmail } from "./data/user";
-
+import Google from "next-auth/providers/google"
+import GitHub from "next-auth/providers/github"
 
 export default {
     providers: [
@@ -22,6 +23,14 @@ export default {
                 }
                 return null;
             }
+        }),
+        Google({
+            clientId : process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET
+        }),
+        GitHub({
+            clientId: process.env.GITHUB_CLIENT_ID,
+            clientSecret: process.env.GITHUB_CLIENT_SECRET
         })
     ]
 } satisfies NextAuthConfig
