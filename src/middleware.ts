@@ -7,7 +7,6 @@ import {
     apiAuthPrefix,
     authRoutes
 } from "@/routes"
-import { NextResponse } from 'next/server';
 
 const { auth } = NextAuth(authConfig);
 //@ts-ignore
@@ -32,7 +31,6 @@ export default auth((req)=>{
     //     default :if(!isPublicRoute && !isLoggedIn) return Response.redirect(new URL("/auth/login", nextUrl));
     //     return null;
     // }
-    
     if(isApiAuthRoute){
         return null
     }
@@ -41,7 +39,7 @@ export default auth((req)=>{
             return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT,nextUrl));
         }
     }
-    if(!isLoggedIn && !isPublicRoute){
+    if(!isLoggedIn && !isPublicRoute && !authRoutes){
         return Response.redirect(new URL("/auth/login", nextUrl));
     }
     return null;
