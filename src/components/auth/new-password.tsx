@@ -3,6 +3,7 @@
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { useState, useTransition } from "react";
+import { useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { NewPassword } from "@/schema/index";
@@ -19,9 +20,12 @@ import { CardWrapper } from "@/components/auth/card-wrapper"
 import { Button } from "@/components/ui/button";
 import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
-import { reset } from "@/actions/reset";
+import { newPassword } from "@/actions/new-password";
 
-export const NewPasswordPage = () => {
+export const NewPasswordForm = () => {
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token");
+
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
@@ -38,9 +42,9 @@ export const NewPasswordPage = () => {
     setSuccess("");
 
     startTransition(() => {
-      reset(values)
+      newPassword(values, token)
         .then((data) => {
-          setError(data?.error);
+          setError(data?.error);//@ts-ignore
           setSuccess(data?.success);
         });
     });
@@ -48,7 +52,7 @@ export const NewPasswordPage = () => {
 
   return (
     <CardWrapper
-      headerLabel="Enter new Password"
+      headerLabel="Enter a new password"
       backButtonLabel="Back to login"
       backButtonHref="/auth/login"
     >
@@ -63,7 +67,7 @@ export const NewPasswordPage = () => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>New Password</FormLabel>
+                  <FormLabel>Password</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
@@ -84,7 +88,7 @@ export const NewPasswordPage = () => {
             type="submit"
             className="w-full"
           >
-            Reset Password
+            Reset password
           </Button>
         </form>
       </Form>

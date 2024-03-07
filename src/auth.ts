@@ -3,6 +3,7 @@ import prisma from "@/db/index"
 import authConfig from "@/auth.config"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import { getUserById } from "./data/user"
+import { sendVerificationEmail } from "./lib/mail"
 
 
 export const {
@@ -29,12 +30,14 @@ export const {
     callbacks: {
         async signIn({ user, account}){
             if(account?.provider !== "credentials") return true;
+            console.log({ user, account})
             //@ts-ignore
             const existingUser = await getUserById(user.id);
             //Prevent non verified email user from signing
             if(!existingUser?.emailVerified){
                 return false;
             }
+            
             return true;
         },
         async session({ token, session }) {
@@ -67,14 +70,7 @@ export const {
                 token.role = existingUser.role;
                 return token
             },
-            // async signIn({user}){//@ts-ignore
-            //     const existingUser = await getUserById(user.id) ;
-            //     if(!existingUser || !existingUser.emailVerified){
-            //         return false;
-            //     }
-                
-            //     return true;
-            // },
+            
     },
     adapter: PrismaAdapter(prisma),
     session: { strategy: "jwt" },
