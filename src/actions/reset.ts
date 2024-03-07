@@ -2,7 +2,7 @@
 import * as z from "zod"
 import { ResetSchema } from "@/schema"
 import { getUserByEmail } from "@/data/user"
-import { getPasswordResetTokenfromDb } from "@/lib/tokens"
+import { generatePasswordResetToken, getPasswordResetTokenByEmail } from "@/lib/tokens"
 import { sendPasswordResetEmail } from "@/lib/mail"
 
 export const reset = async (values: z.infer<typeof ResetSchema>)=>{
@@ -15,16 +15,18 @@ export const reset = async (values: z.infer<typeof ResetSchema>)=>{
     const { email } = validatedFields.data;
 
     const existingUser = await getUserByEmail(email);
-
+    console.log({existingUser});
     if(!existingUser){
         return { error : "User doesnt exist"}
     }
-
-    const passwordResetToken = await getPasswordResetTokenfromDb(email);
+    console.log('Ok')
+    const passwordResetToken = await generatePasswordResetToken(email);
+    console.log({passwordResetToken});
+    console.log("Not ok")
     const emailReset = await sendPasswordResetEmail(//@ts-ignore
         passwordResetToken?.email,
         passwordResetToken?.token
     )
-    console.log(emailReset)
+    console.log({emailReset})
     return { success : "Reset email sent"};
 }

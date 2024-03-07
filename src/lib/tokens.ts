@@ -1,6 +1,6 @@
 import { getVerificationTokenByEmail } from "@/data/verification";
 import { v4 as uuid } from "uuid";
-import prisma from "@/db";
+import prisma from "@/db/index";
 
 
 export const generateVerificationToken = async (email : string)=>{
@@ -29,30 +29,50 @@ export const generateVerificationToken = async (email : string)=>{
         return null
     }
 }
-
-export const getPasswordResetTokenfromDb = async (email : string) =>{
+export const generatePasswordResetToken = async (email: string) => {
     const token = uuid();
-    const expires = new Date(new Date().getTime()+ 3600 * 1000);
-    const existingToken = await getVerificationTokenByEmail(email);
+    const expires = new Date(new Date().getTime() + 3600 * 1000);
+  
+    const existingToken = await getPasswordResetTokenByEmail(email);
+  
+    if (existingToken) {
+      await prisma.passwordResetToken.delete({
+        where: { id: existingToken.id }
+      });
+    }
+  
+    const passwordResetToken = await prisma.passwordResetToken.create({
+      data: {
+        email,
+        token,
+        expires
+      }
+    });
+  
+    return passwordResetToken;
+  }
+  
 
-    if(existingToken){
-        await prisma.verificationToken.delete({
-            where: {
-                id : existingToken.id,
-            }
-        })
-    }
-    try {
-        const passwordResetToken = await prisma.passwordResetToken.create({
-            data : {
-                email: email,
-                token: token,
-                expires: expires
-            }
-        })
-        return passwordResetToken;
-    }catch (e){
-        console.error({e});
-        return null
-    }
-}
+export const getPasswordResetTokenByToken = async (token: string) => {
+  try {
+    const passwordResetToken = await prisma.passwordResetToken.findUnique({
+      where: { token }
+    });
+
+    return passwordResetToken;
+  } catch {
+    return null;
+  }
+};
+
+export const getPasswordResetTokenByEmail = async (email: string) => {
+  try {
+    const passwordResetToken = await prisma.passwordResetToken.findFirst({
+      where: { email }
+    });
+
+    return passwordResetToken;
+  } catch {
+    return null;
+  }
+};

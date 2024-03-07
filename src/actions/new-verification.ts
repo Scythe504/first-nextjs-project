@@ -26,7 +26,15 @@ export const newVerification = async (token : string)=>{
                 email : existingToken.email
             }
         })
-    }catch(e){
+        await prisma.verificationToken.delete({
+            where:{
+                id: existingToken.id
+            },
+        })
+        return { success : "Email verified, redirecting you..."}
 
+    }catch(e){
+        console.error({e})
+        return {error: "Something went wrong"};
     }
 }
