@@ -4,6 +4,7 @@ import authConfig from "@/auth.config"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import { getUserById } from "./data/user"
 import { sendVerificationEmail } from "./lib/mail"
+import { getTwoFactorConfirmationByUserId } from "./lib/two-factor-token-confirmation"
 
 
 export const {
@@ -36,6 +37,15 @@ export const {
             //Prevent non verified email user from signing
             if(!existingUser?.emailVerified){
                 return false;
+            }
+
+            if(existingUser.isTwoFactorEnabled){
+                const twoFactorConfirmation = (await 
+                getTwoFactorConfirmationByUserId
+                (existingUser.id));
+                if(!existingUser.isTwoFactorEnabled) return false
+                //Delete 2FA confirmation for next signin
+                //delete 2FA confirmation from database
             }
             
             return true;
