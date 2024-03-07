@@ -47,7 +47,7 @@ export const newPassword = async (
                 password : hashedPassword,
             }
         })
-        return { success : "Password Resetted successfully"}
+        return { success : "Password Reset successful"}
     }catch (e){
         console.error({e});
         return null;
