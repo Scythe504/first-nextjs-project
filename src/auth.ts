@@ -27,6 +27,16 @@ export const {
        }
     },
     callbacks: {
+        async signIn({ user, account}){
+            if(account?.provider !== "credentials") return true;
+            //@ts-ignore
+            const existingUser = await getUserById(user.id);
+            //Prevent non verified email user from signing
+            if(!existingUser?.emailVerified){
+                return false;
+            }
+            return true;
+        },
         async session({ token, session }) {
             console.log({
                 sessionToken: token,

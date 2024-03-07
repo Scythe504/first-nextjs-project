@@ -15,13 +15,19 @@ export const generateVerificationToken = async (email : string)=>{
             }
         })
     }
-    const verificationToken = await prisma.verificationToken.create({
-        data: {
-            email,
-            token,
-            expires
-        }
-    });
+    try {
+        const verificationToken = await prisma.verificationToken.create({
+            data: {
+                email: email,
+                token: token,
+                expires: expires
+            }
+        });
+        return verificationToken;
+    }catch(e){
+        console.error({e})
+        return null
+    }
 
-    return verificationToken;
+   
 }
