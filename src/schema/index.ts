@@ -18,3 +18,15 @@ export const SignUpSchema = z.object({
         message: "Username can not be empty"
     })
 })
+
+export const ResetSchema = z.object({
+    email : z.string().email({
+        message: "Invalid Email"
+    })
+})
+
+export const NewPassword = z.object({
+    password : z.string().min(6,{
+        message : "It must be of 6 digits"
+    })
+})
